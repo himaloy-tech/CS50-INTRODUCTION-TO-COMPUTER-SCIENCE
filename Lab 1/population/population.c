@@ -4,7 +4,7 @@ int math(int population, int end);
 
 int main(void)
 {
-    int start = 0, end = 0, years = 0;
+    int start = 0, end = 0;
     do
     {
         printf("Start size: ");
