@@ -1,5 +1,5 @@
 #include <stdio.h>
-// #include <stido.h>
+// #include <cs50.h>
 int main(void)
 {
     // Get height
