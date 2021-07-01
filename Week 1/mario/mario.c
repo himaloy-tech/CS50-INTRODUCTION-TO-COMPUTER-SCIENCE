@@ -2,8 +2,10 @@
 // #include <cs50.h>
 int main(void)
 {
-    // Get height
+    // Initializing variables
     int height;
+    
+    // Get height
     do
     {
         // height = get_int("Height: ");

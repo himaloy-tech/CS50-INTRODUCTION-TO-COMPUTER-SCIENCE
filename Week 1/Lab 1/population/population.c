@@ -5,7 +5,7 @@ int math(int population, int end);
 
 int main(void)
 {
-    // Intializing variables
+    // Initializing variables
     int start = 0, end = 0;
 
     // Asking start size
