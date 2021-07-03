@@ -1,5 +1,5 @@
 #include <stdio.h>
-// #include <cs50.h>
+#include "cs50.c"
 #include <math.h>
 
 int main(void)
@@ -11,9 +11,7 @@ int main(void)
     // User input
     do
     {
-        // amount = get_float("Change amount: ");
-        printf("Change owed: ");
-        scanf("%f", &amount);
+        amount = get_float("Change amount: ");
     }
     while (amount < 0);
 

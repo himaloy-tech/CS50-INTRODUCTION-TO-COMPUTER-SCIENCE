@@ -1,23 +1,20 @@
 #include <stdio.h>
-// #include <cs50.h>
+#include "cs50.c"
+
 int main(void)
 {
-    // Initializing variables
-    int height;
-    
     // Get height
+    int height;
     do
     {
-        // height = get_int("Height: ");
-        printf("Height: ");
-        scanf("%i", &height);
+        height = get_int("Height: ");
     }
     while (height < 1 || height > 8);
 
     // Calculation
     for (int n = 0; n < height; n++)
     {
-        // Loop for number of spaces
+        // Loop for number of space
         for (int x = 1; x < (height - n); x++)
         {
             printf(" ");
