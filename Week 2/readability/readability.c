@@ -15,10 +15,7 @@ int main(void)
     int letters = 0;
 
     // Get string
-    // string text = get_string("Text: ");
-    string text;
-    printf("Text: ");
-    gets(text);
+    string text = get_string("Text: ");
 
     // length of the string
     int n = strlen(text);
