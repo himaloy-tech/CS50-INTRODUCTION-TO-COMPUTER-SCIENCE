@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "cs50.c"
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include "cs50.c"
 
 // Alphabets
-char *alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+string alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 int main(void)
 {
