@@ -1,0 +1,11 @@
+sort1 uses: Bubble Sort
+
+How do you know?: It's Bubble sort because it is taking the least amount of time when it is given an array sorted numbers because its lower bound is the smallest of all.
+
+sort2 uses: Merge Sort
+
+How do you know?: It takes the least amount of time among the three sorting algorithms if given to sort random numbers and reversed numbers, merge sort takes the least amount of time when it comes to sorting numbers.
+
+sort3 uses: Selection Sort
+
+How do you know?: We have already got the answers of the first and the second question, so the answer of the third has to be selection sort
