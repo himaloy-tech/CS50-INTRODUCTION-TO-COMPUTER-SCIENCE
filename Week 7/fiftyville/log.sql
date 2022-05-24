@@ -80,4 +80,3 @@ SELECT name FROM people WHERE phone_number IN (SELECT caller FROM phone_calls WH
 --Taylor
 --Kelsey
 --Bruce
-
