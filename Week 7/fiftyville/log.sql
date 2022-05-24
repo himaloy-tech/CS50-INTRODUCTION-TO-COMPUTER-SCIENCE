@@ -3,80 +3,115 @@
 SELECT description FROM crime_scene_reports WHERE year = 2021 AND day = 28 AND month = 7 AND street = "Humphrey Street";
 -- Theft of the CS50 duck took place at 10:15am at the Humphrey Street bakery. Interviews were conducted today with three witnesses who were present at the time - each of their interview transcripts mentions the bakery
 
-SELECT * FROM interviews WHERE year = 2021 AND day = 28 AND month = 7;
--- 163|Raymond|2021|7|28|As the thief was leaving the bakery, they called someone who talked to them for less than a minute. In the call, I heard the thief say that they were planning to take the earliest flight out of Fiftyville tomorrow. The thief then asked the person on the other end of the phone to purchase the flight ticket.
+SELECT * FROM interviews WHERE year = 2021 AND day = 28 AND month = 7  AND transcripts LIKE "%bakery%";
+--161|Ruth|2021|7|28|Sometime within ten minutes of the theft, I saw the thief get into a car in the bakery parking lot and drive away. If you have security footage from the bakery parking lot, you might want to look for cars that left the parking lot in that time frame.
+--162|Eugene|2021|7|28|I don't know the thief's name, but it was someone I recognized. Earlier this morning, before I arrived at Emma's bakery, I was walking by the ATM on Leggett Street and saw the thief there withdrawing some money.
+--163|Raymond|2021|7|28|As the thief was leaving the bakery, they called someone who talked to them for less than a minute. In the call, I heard the thief say that they were planning to take the earliest flight out of Fiftyville tomorrow. The thief then asked the person on the other end of the phone to purchase the flight ticket.
 
-SELECT * FROM airports WHERE city = 'Fiftyville';
+SELECT * FROM bakery_security_logs WHERE year = 2021 AND day = 28 and month = 7 AND hour = 10 AND minute >= 15 AND minute <= 30;
+
+--260|2021|7|28|10|16|exit|5P2BI95
+--261|2021|7|28|10|18|exit|94KL13X
+--262|2021|7|28|10|18|exit|6P58WS2
+--263|2021|7|28|10|19|exit|4328GD8
+--264|2021|7|28|10|20|exit|G412CB7
+--265|2021|7|28|10|21|exit|L93JTIZ
+--266|2021|7|28|10|23|exit|322W7JE
+--267|2021|7|28|10|23|exit|0NTHK55
+
+SELECT * FROM atm_transactions WHERE year = 2021 AND day = 28 AND month = 7 AND atm_location = "Leggett Street" AND transaction_type = 'withdraw';
+--246|28500762|2021|7|28|Leggett Street|withdraw|48
+--264|28296815|2021|7|28|Leggett Street|withdraw|20
+--266|76054385|2021|7|28|Leggett Street|withdraw|60
+--267|49610011|2021|7|28|Leggett Street|withdraw|50
+--269|16153065|2021|7|28|Leggett Street|withdraw|80
+--288|25506511|2021|7|28|Leggett Street|withdraw|20
+--313|81061156|2021|7|28|Leggett Street|withdraw|30
+--336|26013199|2021|7|28|Leggett Street|withdraw|35
+
+SELECT * FROM phone_calls WHERE day = 28 AND year = 2021 AND month = 7 AND duration <= 60;
+--221|(130) 555-0289|(996) 555-8899|2021|7|28|51
+--224|(499) 555-9472|(892) 555-8872|2021|7|28|36
+--233|(367) 555-5533|(375) 555-8161|2021|7|28|45
+--234|(609) 555-5876|(389) 555-5198|2021|7|28|60
+--251|(499) 555-9472|(717) 555-1342|2021|7|28|50
+--254|(286) 555-6063|(676) 555-6554|2021|7|28|43
+--255|(770) 555-1861|(725) 555-3243|2021|7|28|49
+--261|(031) 555-6622|(910) 555-3251|2021|7|28|38
+--279|(826) 555-1652|(066) 555-9701|2021|7|28|55
+--281|(338) 555-6650|(704) 555-2131|2021|7|28|54
+
+SELECT * FROM airports WHERE city = "Fiftyville";
 --8|CSF|Fiftyville Regional Airport|Fiftyville
 
-SELECT * FROM flights WHERE year = 2021 AND day = 28 AND month = 7 AND origin_airport_id = 8;
---1|8|7|2021|7|28|17|50
---6|8|5|2021|7|28|13|49
---17|8|4|2021|7|28|20|16
---34|8|5|2021|7|28|17|20
---35|8|4|2021|7|28|16|16
+SELECT id FROM flights WHERE day = 29 AND month = 7 and year = 2021 AND origin_airport_id = 8 ORDER BY hour ASC LIMIT 1;
+--36
 
-SELECT * FROM passengers WHERE flight_id = 6;
---6|3835860232|9A
---6|1618186613|2C
---6|7179245843|3B
---6|1682575122|4B
---6|7597790505|5D
---6|6128131458|6B
---6|6264773605|7D
---6|3642612721|8A
+SELECT passport_number FROM passengers WHERE flight_id = 8;
+--9172951504
+--5310124622
+--5806941094
+--9852889341
+--3699913849
+--2996517496
 
-SELECT * FROM people WHERE passport_number IN (SELECT passport_number FROM passengers WHERE flight_id = 6);
---341739|Rebecca|(891) 555-5672|6264773605|
---423393|Carol|(168) 555-6126|6128131458|81MNC9R
---505688|Jean|(695) 555-0348|1682575122|JN7K44M
---632023|Amanda|(821) 555-5262|1618186613|RS7I6A0
---745650|Sophia|(027) 555-1068|3642612721|13FNH73
---750165|Daniel|(971) 555-6468|7597790505|FLFN3W0
---780088|Nicole|(123) 555-5144|3835860232|91S1K32
---872102|Joyce||7179245843|594IBK6
-
-SELECT * FROM phone_calls WHERE caller IN (SELECT phone_number FROM people WHERE passport_number IN (SELECT passport_number FROM passengers WHERE flight_id = 6));
-
---1|(123) 555-5144|(007) 555-2874|2021|7|25|243
---11|(891) 555-5672|(222) 555-8026|2021|7|25|486
---13|(168) 555-6126|(618) 555-9856|2021|7|25|390
---41|(027) 555-1068|(594) 555-6254|2021|7|25|582
---94|(695) 555-0348|(095) 555-3639|2021|7|26|299
---111|(821) 555-5262|(529) 555-7276|2021|7|26|345
---119|(168) 555-6126|(869) 555-6696|2021|7|26|471
---149|(891) 555-5672|(869) 555-6696|2021|7|26|47
---159|(821) 555-5262|(839) 555-1757|2021|7|27|462
---170|(695) 555-0348|(367) 555-5533|2021|7|27|218
---176|(168) 555-6126|(037) 555-8455|2021|7|27|116
---192|(027) 555-1068|(375) 555-8161|2021|7|27|71
---232|(971) 555-6468|(267) 555-2761|2021|7|28|149
---252|(695) 555-0348|(338) 555-6650|2021|7|28|383
---282|(971) 555-6468|(258) 555-5627|2021|7|28|441
---307|(891) 555-5672|(676) 555-6554|2021|7|29|402
---320|(821) 555-5262|(130) 555-0289|2021|7|29|263
---397|(123) 555-5144|(118) 555-8106|2021|7|30|149
---440|(123) 555-5144|(901) 555-8732|2021|7|30|366
---469|(971) 555-6468|(342) 555-9260|2021|7|31|562
---471|(027) 555-1068|(717) 555-1342|2021|7|31|567
-
-SELECT * FROM bakery_security_logs WHERE year = 2021 AND day = 28 AND month = 7;
--- bakery logs of that day
-
-SELECT * FROM people WHERE passport_number IN (SELECT passport_number FROM passengers WHERE flight_id = 6) AND license_plate IN (SELECT license_plate FROM bakery_security_logs WHERE year = 2021 AND day = 28 AND month = 7);
-
---632023|Amanda|(821) 555-5262|1618186613|RS7I6A0
---745650|Sophia|(027) 555-1068|3642612721|13FNH73
---750165|Daniel|(971) 555-6468|7597790505|FLFN3W0
-
-SELECT * FROM phone_calls WHERE caller IN (SELECT phone_number FROM people WHERE passport_number IN (SELECT passport_number FROM passengers WHERE flight_id = 6) AND license_plate IN (SELECT license_plate FROM bakery_security_logs WHERE year = 2021 AND day = 28 AND month = 7)) AND day = 28 AND year = 2021 AND month = 7;
-
---232|(971) 555-6468|(267) 555-2761|2021|7|28|149
---282|(971) 555-6468|(258) 555-5627|2021|7|28|441
-
-SELECT name FROM people WHERE phone_number IN (SELECT caller FROM phone_calls WHERE day = 28 AND month = 7 AND year = 2021 AND duration < 60) AND passport_number IN (SELECT passport_number FROM passengers WHERE flight_id = 36) AND license_plate IN (SELECT license_plate FROM bakery_security_logs WHERE year = 2021 AND day = 28 AND month = 7);
-
+SELECT name FROM people WHERE phone_number IN (SELECT phone_number FROM phone_calls WHERE day = 28 AND year = 2021 AND month = 7 AND duration <= 60) AND passport_number IN (SELECT passport_number FROM passengers WHERE flight_id = (SELECT id FROM flights WHERE day = 29 AND month = 7 and year = 2021 AND origin_airport_id = 8 ORDER BY hour ASC LIMIT 1)) AND license_plate IN (SELECT license_plate FROM bakery_security_logs WHERE year = 2021 AND day = 28 and month = 7 AND hour = 10 AND minute >= 15 AND minute <= 30);
 --Sofia
---Taylor
+--Luca
 --Kelsey
 --Bruce
+
+SELECT person_id FROM bank_accounts WHERE account_number IN (SELECT account_number FROM atm_transactions WHERE year = 2021 AND day = 28 AND month = 7 AND atm_location = "Leggett Street" AND transaction_type = 'withdraw');
+--686048
+--514354
+--458378
+--395717
+--396669
+--467400
+--449774
+--438727
+
+SELECT name FROM people WHERE id IN (SELECT person_id FROM bank_accounts WHERE account_number IN (SELECT account_number FROM atm_transactions WHERE year = 2021 AND day = 28 AND month = 7 AND atm_location = "Leggett Street" AND transaction_type = 'withdraw'));
+--Kenny
+--Iman
+--Benista
+--Taylor
+--Brooke
+--Luca
+--Diana
+--Bruce
+
+SELECT name FROM people WHERE phone_number IN (SELECT caller FROM phone_calls WHERE day = 28 AND year = 2021 AND month = 7 AND duration <= 60);
+--Kenny
+--Sofia
+--Benista
+--Taylor
+--Diana
+--Kelsey
+--Kathryn
+--Bruce
+--Carina
+
+--Bruce is the suspect because his name is present in all the checks.
+
+-- DESTINATION
+
+SELECT destination_airport_id FROM flights WHERE id = (SELECT id FROM flights WHERE day = 29 AND month = 7 and year = 2021 AND origin_airport_id = 8 ORDER BY hour ASC LIMIT 1);
+--4
+
+SELECT city FROM airports WHERE id = 4;
+--New York City
+
+-- City escaped is New York City
+
+--ACCOMPLICE
+SELECT phone_number FROM people WHERE name = 'Bruce';
+--(367) 555-5533
+
+SELECT receIver FROM phone_calls WHERE day = 28 AND year = 2021 AND month = 7 AND duration <= 60 AND caller = '(367) 555-5533';
+--(375) 555-8161
+
+SELECT name FROM people WHERE phone_number = '(375) 555-8161';
+--Robin
+
+-- ACCOMPLICE name is Robin
