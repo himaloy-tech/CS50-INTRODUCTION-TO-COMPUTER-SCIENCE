@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+        <title>Trivia!</title>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Trivia!</h1>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <h2>Part 1: Multiple Choice </h2>
+                <hr>
+                <!-- TODO: Add multiple choice question here -->
+                <h3>What is the approximate ratio of people to sheepin New Zealand ?</h3>
+                <button id="1" onclick="incorrect(this.id)">6 people per 1 sheep</button>
+                <button id="2" onclick="incorrect(this.id)">3 people per 1 sheep</button>
+                <button id="3" onclick="incorrect(this.id)">1 people per 3 sheep</button>
+                <button class="correct_ans">1 people per 6 sheep</button>
+                <p id="feedback" style="font-family: 'Montserrat', sans-serif;"></p>
+            </div>
+            
+            <div class="section">
+                <h2>Part 2: Free Response</h2>
+                <hr>
+                <!-- TODO: Add free response question here -->
+                <h3>What is the capital of India ?</h3>
+                <input type="text">
+                <button onclick="check()" id="check_btn">Submit</button>
+                <p id="feedback2" style="font-family: 'Montserrat', sans-serif;"></p>
+            </div>
+        </div>
+    </body>
+    <script>
+        let correct_ans = document.querySelector(".correct_ans");
+        correct_ans.addEventListener('click', () => {
+            correct_ans.style.backgroundColor = "green";
+            correct_ans.style.color = "white";
+            let text = document.getElementById('feedback');
+            text.innerText = 'Correct !!';
+        });
+        function incorrect(id){
+            let btn = document.getElementById(id);
+            btn.style.backgroundColor = "red";
+            btn.style.color = "white";
+            let text = document.getElementById('feedback');
+            text.innerText = 'Incorrect !!';
+        }
+        function check(){
+            let ans = document.querySelector("input");
+            if (ans.value.toLowerCase() == 'new delhi')
+            {
+                ans.style.backgroundColor = "green";
+                ans.style.color = "white";
+                let text = document.getElementById('feedback2');
+                text.innerText = 'Correct !!';
+            }
+            else{
+                ans.style.backgroundColor = "red";
+                ans.style.color = "white";
+                let text = document.getElementById('feedback2');
+                text.innerText = 'Incorrect !!';
+            }
+        }
+    </script>
+</html>
