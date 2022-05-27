@@ -1,0 +1,6 @@
+@media screen and (max-width:1060px) {
+    .card-group{
+        display: flex !important;
+        flex-direction: column !important;
+    }
+}
