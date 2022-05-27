@@ -9,8 +9,8 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
     <link href="styles.css" rel="stylesheet">
-
-    <title>MyWebpage | Home</title>
+    <script src="main.js"></script>
+    <title>MyWebpage | Contact</title>
 </head>
 
 <body>
@@ -25,13 +25,13 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        <a class="nav-link" aria-current="page" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="certificates.html">Certificates</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact</a>
+                        <a class="nav-link active" aria-current="page" href="contact.html">Contact</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="myvideos.html">My Videos</a>
@@ -40,16 +40,18 @@
             </div>
         </div>
     </nav>
-    <h1>Homepage</h1>
-    <center>
-        <div class="jumbotron mt-1">
-            <img id="profile_img" src="images/profile.jpg" alt="profile image">
-            <h1 class="display-4">I'm Himaloy</h1>
-            <p class="lead">I am a 9th standard student from India. My favourite subjects are maths and Science and my
-                Hobbies include programming and gaming. I also play cricket and football. I also make gaming videos on
-                YouTube.</p>
+    <h1>Contact</h1>
+    <form>
+        <div class="mb-4">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
         </div>
-    </center>
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Why do you want to contact Himaloy ?</label>
+            <textarea class="form-control" id="why_contact" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 </body>
 
 </html>
