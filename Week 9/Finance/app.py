@@ -1,4 +1,5 @@
 import os
+from unittest import result
 from sqlalchemy import null
 
 from sympy import re
@@ -114,7 +115,18 @@ def logout():
 @login_required
 def quote():
     """Get stock quote."""
-    return apology("TODO")
+    if request.method == "POST":
+        symbol = request.form.get("symbol").upper()
+        print(symbol)
+        result = lookup(symbol)
+        if result is not None:
+            data = []
+            for key, value in result.items():
+                data.append(value)
+            return render_template("quote.html", data=1, name=data[0], price=data[1], symbol=data[2])
+        else:
+            return apology("Invalid symbol", 403)
+    return render_template("quote.html", data=None)
 
 
 @app.route("/register", methods=["GET", "POST"])
