@@ -1,4 +1,7 @@
 import os
+from sqlalchemy import null
+
+from sympy import re
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
@@ -117,7 +120,23 @@ def quote():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
-    return apology("TODO")
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
+        if username == "" :
+            return apology("username can not be blank", 403)
+        elif len(db.execute('SELECT * FROM users WHERE username = ?', username)) >= 1:
+            return apology("username already exists", 403)
+        elif password == "" or confirmation == "":
+            return apology("password or confirmation can not be blank", 403)
+        elif password != confirmation:
+            return apology("passwords do not match", 403)
+        else:
+            db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
+            return redirect("/login")
+    else:        
+        return render_template("register.html")
 
 
 @app.route("/sell", methods=["GET", "POST"])
