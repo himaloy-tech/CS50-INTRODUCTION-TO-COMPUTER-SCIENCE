@@ -117,7 +117,8 @@ def quote():
     """Get stock quote."""
     if request.method == "POST":
         symbol = request.form.get("symbol").upper()
-        print(symbol)
+        if symbol == "":
+            return apology("Missing Symbol", 400)
         result = lookup(symbol)
         if result is not None:
             data = []
@@ -125,7 +126,7 @@ def quote():
                 data.append(value)
             return render_template("quote.html", data=1, name=data[0], price=data[1], symbol=data[2])
         else:
-            return apology("Invalid symbol", 403)
+            return apology("Invalid symbol", 400)
     return render_template("quote.html", data=None)
 
 
