@@ -1,6 +1,8 @@
 import os
+from unicodedata import name
 from unittest import result
 from sqlalchemy import null
+from datetime import datetime
 
 from sympy import re
 
@@ -54,7 +56,29 @@ def index():
 @login_required
 def buy():
     """Buy shares of stock"""
-    return apology("TODO")
+    if request.method == "POST":
+        symbol = request.form.get("symbol").upper()        
+        shares = request.form.get("shares")
+        if symbol == "":
+            return apology("Missing symbol", 400)
+        elif shares == "":
+            return apology("Missing shares", 400)
+        elif int(shares) < 0:
+            return apology("Shares must be a positive integer", 400)
+        result = lookup(symbol)
+        shares = int(shares)
+        if result is not None:
+            username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
+            cash = int(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
+            if cash < (result["price"] * shares):
+                return apology("Not enough cash", 400)
+            else:
+                db.execute("INSERT INTO purchase (symbol, name, shares, price, username, time) VALUES(?, ?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username, datetime.now())
+                db.execute("UPDATE users SET cash = ? WHERE username = ?", cash - (result["price"] * shares), username)
+            return redirect("/")
+        else:
+            return apology("Invalid symbol", 400)
+    return render_template("buy.html")
 
 
 @app.route("/history")
