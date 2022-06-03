@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-from pickletools import read_unicodestring1
 from re import I
 
 
