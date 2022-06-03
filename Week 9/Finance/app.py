@@ -1,16 +1,12 @@
 import os
-from traceback import print_tb
-from unicodedata import name
-from unittest import result
-from sqlalchemy import null
 from datetime import datetime
+from pickletools import read_unicodestring1
+from re import I
 
-from sympy import re
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
-from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpers import apology, login_required, lookup, usd
@@ -51,12 +47,12 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
     username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
-    cash = int(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
+    cash = float(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
     data = db.execute("SELECT * FROM portfolio WHERE username = ?", username)
     grand_total = 0
     for item in data:
         item["price"] = lookup(item["symbol"])["price"]
-        grand_total = grand_total + (int(item["price"]) * int(item["shares"]))
+        grand_total = grand_total + (float(item["price"]) * float(item["shares"]))
     return render_template("index.html", data=data, cash=cash, grand_total=grand_total + cash)
 
 
@@ -69,6 +65,8 @@ def buy():
         shares = request.form.get("shares")
         if symbol == "":
             return apology("Missing symbol", 400)
+        elif not shares.isdigit():
+            return apology("shares must be an integer", 400)
         elif shares == "":
             return apology("Missing shares", 400)
         elif int(shares) < 0:
@@ -77,7 +75,7 @@ def buy():
         shares = int(shares)
         if result is not None:
             username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
-            cash = int(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
+            cash = float(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
             if cash < (result["price"] * shares):
                 return apology("Not enough cash", 400)
             else:
@@ -183,13 +181,13 @@ def register():
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
         if username == "":
-            return apology("username can not be blank", 403)
+            return apology("username can not be blank", 400)
         elif len(db.execute('SELECT * FROM users WHERE username = ?', username)) >= 1:
-            return apology("username already exists", 403)
+            return apology("username already exists", 400)
         elif password == "" or confirmation == "":
-            return apology("password or confirmation can not be blank", 403)
+            return apology("password or confirmation can not be blank", 400)
         elif password != confirmation:
-            return apology("passwords do not match", 403)
+            return apology("passwords do not match", 400)
         else:
             db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
             return redirect("/login")
@@ -208,8 +206,12 @@ def sell():
         cash = int(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
         if symbol == "":
             return apology("Missing symbol", 400)
+        elif not shares.isdigit():
+            return apology("shares must be an integer", 400)
         elif shares == "":
             return apology("Missing shares", 400)
+        elif int(shares) < 0:
+            return apology("Shares must be a positive integer", 400)
         result = lookup(symbol)
         shares = int(shares)
         if result is not None:
@@ -239,8 +241,8 @@ def sell():
 def add_cash():
     if request.method == "POST":
         username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
-        add_cash = int(request.form.get("cash"))
-        current_cash = int(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
+        add_cash = float(request.form.get("cash"))
+        current_cash = float(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
         db.execute("UPDATE users SET cash = ? WHERE username = ?", (add_cash + current_cash), username)
         return redirect('/')
     return render_template("add_cash.html")

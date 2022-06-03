@@ -19,7 +19,7 @@ History
                 <tr>
                     <td class="text-start">{{item.symbol}}</td>
                     <td class="text-end">{{item.shares}}</td>
-                    <td class="text-end">${{item.price}}</td>
+                    <td class="text-end">{{item.price | usd}}</td>
                     <td class="text-end">{{item.time}}</td>
                 </tr>
                 {% endfor %}
