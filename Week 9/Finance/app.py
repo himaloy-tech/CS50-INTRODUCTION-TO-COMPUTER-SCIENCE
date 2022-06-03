@@ -50,7 +50,14 @@ def after_request(response):
 @login_required
 def index():
     """Show portfolio of stocks"""
-    return apology("TODO")
+    username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
+    cash = int(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
+    data = db.execute("SELECT * FROM portfolio WHERE username = ?", username)
+    grand_total = 0
+    for item in data:
+        item["price"] = lookup(item["symbol"])["price"]
+        grand_total = grand_total + (int(item["price"]) * int(item["shares"]))
+    return render_template("index.html", data=data, cash=cash, grand_total=grand_total + cash)
 
 
 @app.route("/buy", methods=["GET", "POST"])
