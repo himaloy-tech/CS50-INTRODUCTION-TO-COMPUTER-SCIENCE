@@ -86,7 +86,7 @@ def buy():
                 else:
                     current_no_shares = db.execute("SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]
                     db.execute("UPDATE portfolio SET shares = ? WHERE username = ? AND symbol = ?", int(current_no_shares) + shares, username, symbol)
-                db.execute("INSERT INTO history (symbol, name, shares, price, username, type, time) VALUES(?, ?, ?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username, "BUY", datetime.now())
+                db.execute("INSERT INTO history (symbol, name, shares, price, username, time) VALUES(?, ?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username, datetime.now())
                 db.execute("UPDATE users SET cash = ? WHERE username = ?", cash - (result["price"] * shares), username)
             return redirect("/")
         else:
@@ -98,8 +98,11 @@ def buy():
 @login_required
 def history():
     """Show history of transactions"""
-    return apology("TODO")
-
+    username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
+    data = db.execute("SELECT * FROM history WHERE username = ?", username)
+    for item in data:
+        item["price"] = lookup(item["symbol"])["price"]
+    return render_template("history.html", data=data)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -214,7 +217,7 @@ def sell():
             else:
                 current_no_shares = db.execute("SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]
                 db.execute("UPDATE portfolio SET shares = ? WHERE username = ? AND symbol = ?", int(current_no_shares) - shares, username, symbol)
-                db.execute("INSERT INTO history (symbol, name, shares, price, username, type, time) VALUES(?, ?, ?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username, "SELL", datetime.now())
+                db.execute("INSERT INTO history (symbol, name, shares, price, username, time) VALUES(?, ?, ?, ?, ?, ?)", symbol, result["name"], (shares * (-1)), result["price"], username, datetime.now())
                 db.execute("UPDATE users SET cash = ? WHERE username = ?", cash + (result["price"] * shares), username)
             return redirect('/')
         else:

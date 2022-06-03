@@ -5,7 +5,6 @@ CREATE TABLE history(
     shares INTEGER,
     price DECIMAL(7, 3),
     username TEXT,
-    type TEXT,
     time TEXT,
     PRIMARY KEY(id)
 );
