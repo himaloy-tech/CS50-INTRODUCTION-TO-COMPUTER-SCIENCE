@@ -193,4 +193,31 @@ def register():
 @login_required
 def sell():
     """Sell shares of stock"""
-    return apology("TODO")
+    username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
+    if request.method == "POST":
+        symbol = request.form.get("symbol").upper()        
+        shares = request.form.get("shares")
+        cash = int(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
+        if symbol == "":
+            return apology("Missing symbol", 400)
+        elif shares == "":
+            return apology("Missing shares", 400)
+        result = lookup(symbol)
+        shares = int(shares)
+        if result is not None:
+            if int(shares) < 0:
+                return apology("Shares must be a positive integer", 400)
+            elif int(db.execute("SELECT COUNT(*) FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["COUNT(*)"]) == 0:
+                return apology("You don't own any share of this company")
+            elif int(db.execute("SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]) < int(shares):
+                return apology("Too Much Shares")
+            else:
+                current_no_shares = db.execute("SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]
+                db.execute("UPDATE portfolio SET shares = ? WHERE username = ? AND symbol = ?", int(current_no_shares) - shares, username, symbol)
+                db.execute("INSERT INTO history (symbol, name, shares, price, username, type, time) VALUES(?, ?, ?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username, "SELL", datetime.now())
+                db.execute("UPDATE users SET cash = ? WHERE username = ?", cash + (result["price"] * shares), username)
+            return redirect('/')
+        else:
+            return apology("Invalid Symbol", 400)
+    data = db.execute("SELECT symbol FROM portfolio WHERE username = ?", username)
+    return render_template("sell.html", data=data)
