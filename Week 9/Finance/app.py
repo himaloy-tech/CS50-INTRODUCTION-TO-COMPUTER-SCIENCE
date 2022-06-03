@@ -82,11 +82,15 @@ def buy():
                 return apology("Not enough cash", 400)
             else:
                 if int(db.execute("SELECT COUNT(*) FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["COUNT(*)"]) == 0:
-                    db.execute("INSERT INTO portfolio (symbol, name, shares, price, username) VALUES(?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username)
+                    db.execute("INSERT INTO portfolio (symbol, name, shares, price, username) VALUES(?, ?, ?, ?, ?)",
+                               symbol, result["name"], shares, result["price"], username)
                 else:
-                    current_no_shares = db.execute("SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]
-                    db.execute("UPDATE portfolio SET shares = ? WHERE username = ? AND symbol = ?", int(current_no_shares) + shares, username, symbol)
-                db.execute("INSERT INTO history (symbol, name, shares, price, username, time) VALUES(?, ?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username, datetime.now())
+                    current_no_shares = db.execute(
+                        "SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]
+                    db.execute("UPDATE portfolio SET shares = ? WHERE username = ? AND symbol = ?",
+                               int(current_no_shares) + shares, username, symbol)
+                db.execute("INSERT INTO history (symbol, name, shares, price, username, time) VALUES(?, ?, ?, ?, ?, ?)",
+                           symbol, result["name"], shares, result["price"], username, datetime.now())
                 db.execute("UPDATE users SET cash = ? WHERE username = ?", cash - (result["price"] * shares), username)
             return redirect("/")
         else:
@@ -103,6 +107,7 @@ def history():
     for item in data:
         item["price"] = lookup(item["symbol"])["price"]
     return render_template("history.html", data=data)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -177,7 +182,7 @@ def register():
         username = request.form.get("username")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
-        if username == "" :
+        if username == "":
             return apology("username can not be blank", 403)
         elif len(db.execute('SELECT * FROM users WHERE username = ?', username)) >= 1:
             return apology("username already exists", 403)
@@ -215,15 +220,19 @@ def sell():
             elif int(db.execute("SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]) < int(shares):
                 return apology("Too Much Shares")
             else:
-                current_no_shares = db.execute("SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]
-                db.execute("UPDATE portfolio SET shares = ? WHERE username = ? AND symbol = ?", int(current_no_shares) - shares, username, symbol)
-                db.execute("INSERT INTO history (symbol, name, shares, price, username, time) VALUES(?, ?, ?, ?, ?, ?)", symbol, result["name"], (shares * (-1)), result["price"], username, datetime.now())
+                current_no_shares = db.execute(
+                    "SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]
+                db.execute("UPDATE portfolio SET shares = ? WHERE username = ? AND symbol = ?",
+                           int(current_no_shares) - shares, username, symbol)
+                db.execute("INSERT INTO history (symbol, name, shares, price, username, time) VALUES(?, ?, ?, ?, ?, ?)",
+                           symbol, result["name"], (shares * (-1)), result["price"], username, datetime.now())
                 db.execute("UPDATE users SET cash = ? WHERE username = ?", cash + (result["price"] * shares), username)
             return redirect('/')
         else:
             return apology("Invalid Symbol", 400)
     data = db.execute("SELECT symbol FROM portfolio WHERE username = ?", username)
     return render_template("sell.html", data=data)
+
 
 @app.route("/add_cash", methods=["GET", "POST"])
 @login_required
