@@ -224,3 +224,14 @@ def sell():
             return apology("Invalid Symbol", 400)
     data = db.execute("SELECT symbol FROM portfolio WHERE username = ?", username)
     return render_template("sell.html", data=data)
+
+@app.route("/add_cash", methods=["GET", "POST"])
+@login_required
+def add_cash():
+    if request.method == "POST":
+        username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
+        add_cash = int(request.form.get("cash"))
+        current_cash = int(db.execute("SELECT cash FROM users WHERE username = ?", username)[0]["cash"])
+        db.execute("UPDATE users SET cash = ? WHERE username = ?", (add_cash + current_cash), username)
+        return redirect('/')
+    return render_template("add_cash.html")
