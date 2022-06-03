@@ -1,4 +1,5 @@
 import os
+from traceback import print_tb
 from unicodedata import name
 from unittest import result
 from sqlalchemy import null
@@ -73,7 +74,12 @@ def buy():
             if cash < (result["price"] * shares):
                 return apology("Not enough cash", 400)
             else:
-                db.execute("INSERT INTO purchase (symbol, name, shares, price, username, time) VALUES(?, ?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username, datetime.now())
+                if int(db.execute("SELECT COUNT(*) FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["COUNT(*)"]) == 0:
+                    db.execute("INSERT INTO portfolio (symbol, name, shares, price, username) VALUES(?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username)
+                else:
+                    current_no_shares = db.execute("SELECT shares FROM portfolio WHERE username = ? AND symbol = ?", username, symbol)[0]["shares"]
+                    db.execute("UPDATE portfolio SET shares = ? WHERE username = ? AND symbol = ?", int(current_no_shares) + shares, username, symbol)
+                db.execute("INSERT INTO history (symbol, name, shares, price, username, type, time) VALUES(?, ?, ?, ?, ?, ?, ?)", symbol, result["name"], shares, result["price"], username, "BUY", datetime.now())
                 db.execute("UPDATE users SET cash = ? WHERE username = ?", cash - (result["price"] * shares), username)
             return redirect("/")
         else:
