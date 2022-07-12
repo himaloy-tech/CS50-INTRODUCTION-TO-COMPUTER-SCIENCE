@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, redirect
 from .models import Course, Contact, Post, User, Comment
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout as auth_logout
@@ -30,7 +30,7 @@ def login(request):
 
 def logout(request):
     auth_logout(request)
-    return render(request, "login.html")
+    return redirect('/')
 
 def register(request):
     if request.method == "POST":
